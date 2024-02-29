@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+  {% if form.errors %}
+    <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
+  {% endif %}
+
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Su cuenta no tiene acceso a esta página. Para continuar,
+      inicie sesión con una cuenta que tenga acceso.</p>
+    {% else %}
+      <p>Por favor inicie sesión para ver esta página.</p>
+    {% endif %}
+  {% endif %}
+
+  <!-- esto mostrará un formulario en el que puedes introducir tu usuario y contraseña, y si introduces valores inválidos se te pedirá que ingreses los valores correctos cuando la página refresque. 
+   django ya se encarga del proceso de autenticación bajo la mesa, nosotros solo estamos haciendo cosas basandonos en si django dictamina que la autenticación fue exitosa o no 
+   ahora hay que configurar algo más, ya que al ser el login exitoso nos va a redirigir a una página de profile automáticamente, la cual no existe, así que en setting
+   vamos a configurar que después del login nos redirija a home-->
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+      <tr>
+        <td>{{ form.username.label_tag }}</td> 
+        <td>{{ form.username }}</td> <!-- etiqueta para mostrar un recuadro donde se va a escribir el nombre del usuario, el cual se va a guardar en una variable -->
+      </tr>
+      <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </tr>
+    </table>
+    <input type="submit" value="login">
+    <input type="hidden" name="next" value="{{ next }}">
+  </form>
+
+  {# Asume que configura la vista de restablecimiento de contraseña en su URLconf #}
+  <p><a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a></p>
+
+{% endblock %}

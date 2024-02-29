@@ -1,0 +1,23 @@
+<!-- plantilla para la página de vista que va a mostrar los libros que tiene un user alquilado -->
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Libros prestados</h1>
+
+    {% if bookinstance_list %}
+    <ul>
+
+      {% for bookinst in bookinstance_list %}
+      <!-- comprobamos el método que hemos añadido en el modelo con property (bookinst.is_overdue) para ver is la instancia está atrasada y
+         lo usamos para cambiar el color de los elementos atrasados (se van a mostrar en rojo). -->
+      <li class="{% if bookinst.is_overdue %}text-danger{% endif %}">
+        <a href="{% if bookinst.book != None %} {% url 'book-detail' bookinst.book.pk %} {% endif %}">{{bookinst.book.title}}</a> ({{ bookinst.due_back }})
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>No hay libros prestados.</p>
+    {% endif %}
+{% endblock %}

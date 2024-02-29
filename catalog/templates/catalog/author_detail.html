@@ -1,0 +1,29 @@
+<!-- este es el archivo por defecto esperado por la vista de detalle genérica basada en clases (para un modelo llamado Author en una aplicación llamada catalog). -->
+
+{% extends "base_generic.html" %}
+
+{% block title%}<title>{{ author.first_name }} {{author.last_name}}</title>{% endblock %}
+
+{% block content %}
+  <h1>Author: {{ author.first_name }} {{author.last_name}}</h1>
+
+  <p>{% if author.date_of_birth  %} {{author.date_of_birth}} {% endif %} - {% if author.date_of_death  %} {{author.date_of_death}} {% endif %}</p>
+
+  <!-- si el usuario es un librero, permitirle editar o eliminar el autor -->
+  {% if perms.catalog.can_mark_returned %}
+    <p><a href="{% url 'author-update' author.pk %}">Update Author</a></p>
+    <p><a href="{% url 'author-delete' author.pk %}">Delete Author</a></p>
+  {% endif %}
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Books</h4>
+
+    <!-- iterar sobre la lista de libros del autor, que son los datos adicionales que tomamos con get_context_data -->
+    {% if book_list %} 
+        {% for book in book_list %}
+            <p><strong><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></strong></p>
+            <p>{{book.summary}}</p>
+        {% endfor %}
+    {% endif %}
+  </div>
+{% endblock %}

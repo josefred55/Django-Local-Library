@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+<!-- pagina para notificar que el usuario ha cerrado sesión y evitar un comportamiento extraño 
+    para cerrar sesión apropiadamente el la página de logout debe recibir un metodo POST o de lo contrario va a dar error 405-->
+
+{% block content %}
+<p>¡Sesión finalizada!</p>
+
+<a href="{% url 'login'%}">Haga clic aquí para iniciar sesión nuevamente.</a>
+{% endblock %}

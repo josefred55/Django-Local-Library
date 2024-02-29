@@ -1,0 +1,19 @@
+<!-- plantilla de la vista de edición génerica author create y update-->
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+{% if request.path == "/catalog/author/create/" %}
+<h1>Create an Author</h1>
+{% else %}
+<h1>Update Author</h1>
+{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

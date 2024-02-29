@@ -1,0 +1,39 @@
+<!-- este es el archivo por defecto esperado por la vista de detalle genérica basada en clases (para un modelo llamado Book en una aplicación llamada catalog). -->
+
+{% extends "base_generic.html" %}
+
+{% block title%}<title>{{ book.title }}</title>{% endblock %}
+
+{% block content %}
+  <h1>Title: {{ book.title }}</h1>
+
+  <p><strong>Autor:</strong> <a href="{% url 'author-detail' book.author.pk %}">{{ book.author }}</a></p>
+  <p><strong>Resumen:</strong> {{ book.summary }}</p>
+  <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+  <p><strong>Idioma:</strong> {{ book.language }}</p>
+  <p><strong>Genero:</strong> {% for genre in book.genre.all %} {{ genre }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+
+  <!-- si el usuario es un librero, permitirle editar o eliminar el libro -->
+  {% if perms.catalog.can_mark_returned %}
+    <p><a href="{% url 'book-update' book.pk %}">Update Book</a></p>
+    <p><a href="{% url 'book-delete' book.pk %}">Delete Book</a></p>
+  {% endif %}
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Copias</h4>
+
+    <!-- book.bookinstance_set.all(). Es un método "automágicamente" creado por Django para devolver el conjunto de registros de BookInstance asociado con un Book en particular.
+    o en español, devolver todas las instancias de cada libro  Este método es necesario porque has declarado un campo ForeignKey (uno-a-muchos) únicamente en la lado "uno" de la relación. 
+    Como no haces nada para declarar la relación en el otro modelo ("muchos"), este no tiene ningún campo para obtener el conjunto de registros asociados. 
+    Para superar este problema, Django construye una función apropiadamente llamada "búsqueda reversa" que puedes usar. 
+    El nombre de la función se construye convirtiendo a minúsculas el nombre del modelo donde la ForeignKey fue declarada, seguido por _set-->
+
+    {% for copy in book.bookinstance_set.all %}
+        <hr>
+        <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">{{ copy.get_status_display }}</p>
+        {% if copy.status != 'a' %}<p><strong>Pendiente de devolución:</strong> {{copy.due_back}}</p>{% endif %}
+        <p><strong>Imprimir:</strong> {{copy.imprint}}</p>
+        <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

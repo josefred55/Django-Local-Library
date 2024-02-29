@@ -1,0 +1,26 @@
+<!-- este es el archivo de plantilla por defecto esperado por la vista de lista genérica basada en clases (para un modelo llamado Book en una aplicación llamada catalog). 
+La vista envía el contexto (lista de libros) por defecto como object_list y book_list (son áliases, cualquiera de ellos funcionará).-->
+
+{% extends "base_generic.html" %}
+
+{% block title%}<title>Local Library Books</title>{% endblock %}
+
+{% block content %}
+    <h1>Lista de libros</h1>
+
+    {% if book_list %} <!-- si la lista de libros existe, que se despliegue, y sino mostrar un mensaje de aviso -->
+    <ul>
+
+      {% for book in book_list %} <!-- iterando la lista, jinja crea variables dentro del loop que se pueden usar para moniterear la iteracion, por ejemplo forloop.last  para realizar un procesamiento condicional la última vez que el lazo se ejecuta. -->
+      <li>
+        <!-- ese href va a hacer que en título del libro se enlaze con la pagina de vista detallada del mismo libro. osea que va a redirigir a esa pagina al clickearlo. Aquí estamos invocando a un método de el módelo, esto funciona siempre y cuando el método no requiera argumentos, ya que no podemos mandarlos
+        Debemos tener cuidado de los "efectos secundarios" al invocar funciones en las plantillas. Aquí solo obtenemos una URL para desplegar, pero una función puede hacer casi cualquier cosa -->
+        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}}) 
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay libros en la biblioteca.</p>
+    {% endif %}
+{% endblock %}

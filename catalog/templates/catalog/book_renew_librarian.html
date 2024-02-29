@@ -1,0 +1,28 @@
+<!-- plantilla html referenciada por la función de vista para que un bibliotecario renove libros prestados -->
+
+{% extends "base_generic.html" %}
+{% block content %}
+     <!-- nos podemos referir a nuestra bookinstance con bookinst ya que es el nombre que se le dió en el contexto -->
+    <h1>Renew: {{bookinst.book.title}}</h1>
+    <p>Borrower: {{bookinst.borrower}}</p>
+    <p{% if bookinst.is_overdue %} class="text-danger"{% endif %}>Due date: {{bookinst.due_back}}</p>
+
+    <!-- un espacio vacío en action como se muestra, significa que los datos del formulario se volverán a publicar en la URL actual de la página (¡que es lo que queremos!).  -->
+    <form action="" method="post">
+        {% csrf_token %} <!-- Esto e parte de la protección de falsificación entre sitios de Django. Se debería usar en cada plantill que use POST para envíar datos. Esto reducirá la posibilidad de que usuarios malintencionados secuestran formularios. -->
+        <table>
+        <!-- nuestro formulario que mandamos en el contexto de la plantilla. esto proporciona la representación predeterminada de todos los campos del formulario, incluidas sus etiquetas, widgets y texto de ayuda
+        se encuentra en una tabla (etiqueta table) porque por defecto los campos son definidos como una fila singular en la tabla, aunque aquí no es obvio ya que solo hay un campo. 
+        Esta misma representación (rendering) se proporciona si hace referencia a la variable de plantilla {-{ form.as_table }-}.-->
+        {{ form }}
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+
+{% endblock %}
+
+<!-- la variable form también se puede usar de más formas. como se muestra arriba, cada campo se representa como una fila de la tabla. 
+También puede representar cada campo como un elemento de la lista (usando {-{form.as_ul}-} ) o como un parrafo (usando {-{form.as_p}-}). 
+Y también puede tener un control completo sobre la representación de cada parte del formulario, indexando sus propiedades mediante la notación de puntos. 
+Entonces, por ejemplo, podemos acceder a una serie de elementos separados dentro de los campos de renewal_date como por ejemplo:
+"form.renewal_date" para acceder a todo el campo. "form.renewal_date.errors" para la lista de errores. etc--->
