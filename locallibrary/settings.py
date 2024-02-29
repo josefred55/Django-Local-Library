@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Para instalar WhiteNoise en la aplicación Django
     'django.contrib.sessions.middleware.SessionMiddleware',  #Manages sessions across requests
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,12 +120,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -134,3 +129,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # queremos que nuestro sitio web soporte envío de correo. Esto registra en la consola cualquier envío de correo electrónico (y así puedes copiar el enlace de reinicio de contraseña desde dicha consola).
+
+# Heroku: Actualice la configuración de la base de datos desde $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+# Archivos estáticos (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.10/howto/static-files/
+
+# La ruta absoluta al directorio donde Collectstatic recopilará archivos estáticos para su implementación.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# La URL que se utilizará cuando se haga referencia a archivos estáticos (desde donde se entregarán)
+STATIC_URL = '/static/'
+
+# podemos reducir el tamaño de los ficheros estáticos al ser servidos (lo que lo hace más eficiente).
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
